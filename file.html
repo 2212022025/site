@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Utkarsh Front Page & Document Maker</title>
+    
+    <!-- Importing Elegant Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500&family=Playfair+Display:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
+
+    <style>
+        /* Base and Background Styling */
+        body {
+            margin: 0;
+            padding: 0;
+            background-color: #1a120c; /* Deep dark brown */
+            /* Subtle dotted grid background */
+            background-image: radial-gradient(#3a2a1c 1px, transparent 1px);
+            background-size: 50px 50px;
+            color: white;
+            font-family: 'Playfair Display', serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            flex-direction: column;
+        }
+
+        .container {
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 40px 20px;
+            max-width: 800px;
+        }
+
+        /* Top Document Icon */
+        .top-icon {
+            margin-bottom: 25px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .top-icon svg {
+            width: 70px;
+            height: 70px;
+            stroke: #dcb36a; /* Gold color matching your theme */
+            filter: drop-shadow(0px 0px 10px rgba(220, 179, 106, 0.3)); /* Subtle gold glow */
+        }
+
+        /* Main Typography */
+        h1.main-title {
+            font-weight: normal;
+            margin: 0;
+            line-height: 1.3;
+            margin-bottom: 30px;
+        }
+
+        .white-text {
+            font-size: 46px;
+            letter-spacing: 4px;
+            color: #ffffff;
+            text-transform: uppercase;
+        }
+
+        .gold-text {
+            font-size: 54px;
+            color: #dcb36a;
+            font-style: italic;
+            letter-spacing: 2px;
+        }
+
+        /* Subtitle/Tagline */
+        .tagline {
+            color: #a3a3a3;
+            font-style: italic;
+            font-size: 19px;
+            margin-bottom: 50px;
+            letter-spacing: 1px;
+        }
+
+        /* Buttons Styling */
+        .button-group {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            width: 100%;
+            max-width: 380px;
+        }
+
+        .btn {
+            text-decoration: none;
+            padding: 20px 20px;
+            font-family: 'Montserrat', sans-serif;
+            font-size: 12px;
+            letter-spacing: 4px;
+            text-transform: uppercase;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: center;
+            border: none;
+            outline: none;
+        }
+
+        /* 1st Button: Gold */
+        .btn-gold {
+            background: linear-gradient(to right, #d4b872, #e6c883, #d4b872);
+            color: #1a120c;
+            font-weight: 500;
+        }
+
+        .btn-gold:hover {
+            background: linear-gradient(to right, #e6c883, #f5d894, #e6c883);
+            box-shadow: 0 0 15px rgba(212, 184, 114, 0.3);
+        }
+
+        /* 2nd Button: Blue */
+        .btn-blue {
+            background: linear-gradient(to right, #1a365d, #2b6cb0, #1a365d);
+            color: #ffffff;
+            font-weight: 500;
+        }
+
+        .btn-blue:hover {
+            background: linear-gradient(to right, #2b6cb0, #4299e1, #2b6cb0);
+            box-shadow: 0 0 15px rgba(43, 108, 176, 0.4);
+        }
+
+        /* 3rd Button: Red */
+        .btn-red {
+            background: linear-gradient(to right, #742a2a, #c53030, #742a2a);
+            color: #ffffff;
+            font-weight: 500;
+        }
+
+        .btn-red:hover {
+            background: linear-gradient(to right, #c53030, #e53e3e, #c53030);
+            box-shadow: 0 0 15px rgba(197, 48, 48, 0.4);
+        }
+
+        /* Responsive adjustments */
+        @media (max-width: 768px) {
+            .white-text { font-size: 32px; }
+            .gold-text { font-size: 38px; }
+            .top-icon svg { width: 60px; height: 60px; }
+        }
+
+        @media (max-width: 500px) {
+            .white-text { font-size: 24px; }
+            .gold-text { font-size: 30px; }
+            .btn { font-size: 11px; padding: 18px 15px;}
+            .top-icon svg { width: 50px; height: 50px; margin-bottom: -5px;}
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+
+        <!-- Top Documents Icon (Inline SVG) -->
+        <div class="top-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round">
+                <!-- Back document outline -->
+                <path d="M6 22V4a2 2 0 0 1 2-2h8l6 6v14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2z"></path>
+                <!-- Folded corner -->
+                <path d="M14 2v6h6"></path>
+                <!-- Stylized text lines on the document -->
+                <line x1="10" y1="12" x2="16" y2="12"></line>
+                <line x1="10" y1="16" x2="16" y2="16"></line>
+                <line x1="10" y1="20" x2="14" y2="20"></line>
+            </svg>
+        </div>
+
+        <!-- Title -->
+        <h1 class="main-title">
+            <span class="white-text">UTKARSH FRONT PAGE &</span><br>
+            <span class="gold-text">DOCUMENT MAKER</span>
+        </h1>
+
+        <!-- Tagline -->
+        <p class="tagline">Menu</p>
+
+        <!-- Buttons -->
+        <div class="button-group">
+            <!-- 1st Button -->
+            <a href="page.html" class="btn btn-gold">FRONT PAGE MAKER</a>
+            
+            <!-- 2nd Button (Blue) -->
+            <a href="page1.html" class="btn btn-blue">DOCUMENT MAKER</a>
+            
+            <!-- 3rd Button (Red, Triggers Javascript) -->
+            <button onclick="checkApiKey()" class="btn btn-red">BUILD WITH AI</button>
+        </div>
+
+    </div>
+
+    <!-- JavaScript for AI Button Logic -->
+    <script>
+        function checkApiKey() {
+            // Ask the user for the API key
+            let key = prompt("Please enter your Paid API Key to continue:");
+            
+            // Check if user clicked Cancel
+            if (key === null) {
+                return; 
+            }
+            
+            // Validate the key
+            if (key === "28293873929") {
+                alert("API Key Valid! Access Granted to AI Builder.");
+                // You can redirect them to the AI page here in the future:
+                // window.location.href = "ai_page.html";
+            } else {
+                alert("Api Is Invalid");
+            }
+        }
+    </script>
+
+</body>
+</html>

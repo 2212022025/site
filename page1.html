@@ -1,0 +1,747 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document Maker </title>
+    
+    <!-- Import Handwriting, Stylish, & Standard Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@400;700&family=Dancing+Script:wght@400;700&family=Indie+Flower&family=Pacifico&family=Patrick+Hand&family=Lobster&family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Merriweather:ital,wght@0,400;0,700;1,400&family=Comic+Neue:wght@400;700&display=swap" rel="stylesheet">
+    
+    <!-- Import FontAwesome for Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- html2canvas for downloading the A4 page -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    
+    <style>
+        :root {
+            --bg-color: #f3f4f6;
+            --panel-bg: #ffffff;
+            --primary: #4f46e5;
+            --primary-hover: #4338ca;
+            --text-dark: #1f2937;
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--bg-color);
+            display: flex;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        /* --- FULL SCREEN MAIN MENU OVERLAY --- */
+        #full-screen-menu {
+            position: fixed;
+            top: 0; 
+            left: 0; 
+            width: 100vw; 
+            height: 100vh;
+            background-color: #fdfbf7; /* Cream background matching image */
+            z-index: 9999;
+            display: flex;
+            flex-direction: column;
+            overflow-y: auto;
+        }
+        
+        .fs-header {
+            background-color: #000000;
+            padding: 15px 20px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            color: #c9a96e; /* Gold color */
+            font-family: 'Playfair Display', serif;
+            letter-spacing: 2px;
+            font-size: 14px;
+            text-transform: uppercase;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+        }
+        
+        .fs-logo {
+            width: 45px; 
+            height: 45px;
+            background: #fff;
+            border-radius: 50%;
+            display: flex; 
+            justify-content: center; 
+            align-items: center;
+            border: 2px solid #c9a96e;
+            color: #000;
+            font-size: 20px;
+            box-sizing: border-box;
+        }
+        
+        .fs-content {
+            flex: 1;
+            padding-bottom: 80px;
+        }
+        
+        .fs-section-title {
+            text-align: center;
+            margin-top: 80px;
+            font-family: 'Segoe UI', sans-serif;
+        }
+        
+        .fs-section-title h2 {
+            font-size: 24px;
+            font-weight: 800;
+            color: #2b2b2b;
+            margin: 0 0 10px 0;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        
+        .fs-menu-list {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            max-width: 400px;
+            margin: 40px auto 0;
+            padding: 0 20px;
+        }
+        
+        .fs-menu-btn {
+            background-color: var(--primary);
+            color: white;
+            border: none;
+            padding: 18px 20px;
+            border-radius: 8px;
+            font-size: 18px;
+            cursor: pointer;
+            width: 100%;
+            font-weight: bold;
+            transition: background-color 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+        
+        .fs-menu-btn:hover {
+            background-color: var(--primary-hover);
+        }
+
+        /* --- CONTROL PANEL (LEFT SIDE 50%) --- */
+        .controls {
+            width: 50%;
+            background-color: var(--panel-bg);
+            padding: 20px 30px;
+            box-shadow: 2px 0 10px rgba(0,0,0,0.1);
+            overflow-y: auto;
+            z-index: 10;
+            box-sizing: border-box;
+            position: relative;
+        }
+
+        h2 { 
+            margin-top: 0; 
+            color: var(--text-dark); 
+            font-size: 22px; 
+            text-align: center; 
+            border-bottom: 2px solid var(--primary); 
+            padding-bottom: 10px;
+        }
+        
+        .control-group {
+            border: 1px solid #e5e7eb;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 15px;
+            background-color: #f9fafb;
+        }
+        
+        .control-group h3 { margin: 0 0 10px 0; font-size: 16px; color: var(--primary); }
+        
+        label { display: block; font-size: 13px; font-weight: bold; margin-bottom: 5px; margin-top: 10px; color: #374151;}
+        input[type="text"], select, input[type="color"], textarea {
+            width: 100%; padding: 8px; border: 1px solid #d1d5db; border-radius: 4px; box-sizing: border-box;
+            font-family: inherit;
+        }
+        textarea { resize: vertical; min-height: 100px; }
+        input[type="color"] { height: 35px; cursor: pointer; padding: 2px; }
+        input[type="range"] { width: 100%; }
+        
+        .add-website-box { display: flex; gap: 5px; }
+        .add-website-box input { flex: 1; }
+        
+        button {
+            background-color: var(--primary); color: white; border: none; padding: 10px; border-radius: 5px;
+            cursor: pointer; font-weight: bold; transition: 0.2s;
+            display: flex; align-items: center; justify-content: center; gap: 8px;
+        }
+        button:hover { background-color: var(--primary-hover); }
+
+        /* Sidebar Links Display */
+        .sidebar-list {
+            list-style: none;
+            padding: 0;
+            margin: 15px 0 0 0;
+        }
+        .sidebar-list li {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: #ffffff;
+            padding: 8px 12px;
+            border: 1px solid #d1d5db;
+            margin-bottom: 8px;
+            border-radius: 4px;
+            font-size: 14px;
+        }
+        .sidebar-list li button {
+            background: #ef4444; padding: 6px 10px; margin: 0; font-size: 12px;
+        }
+        
+        .download-btn { width: 100%; padding: 15px; font-size: 16px; margin-top: 10px; background-color: #10b981; }
+        .download-btn:hover { background-color: #059669; }
+
+        .back-btn {
+            background: #6b7280; color: white; margin-bottom: 20px; width: 100%; padding: 12px;
+        }
+        .back-btn:hover { background: #4b5563; }
+
+        /* --- PREVIEW AREA (RIGHT SIDE 50%) --- */
+        .preview-area {
+            width: 50%;
+            position: relative; 
+            overflow: hidden; 
+            background-color: #e5e7eb;
+            box-sizing: border-box;
+        }
+        
+        .a4-page-container {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 794px;
+            height: 1123px;
+            transform-origin: center;
+        }
+
+        /* STRICT A4 Page Dimensions (96 DPI) - Fixed Size */
+        .a4-page {
+            width: 794px;
+            height: 1123px; 
+            background-color: #ffffff;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+            box-sizing: border-box;
+            padding: 60px 70px;
+            border: 5px solid transparent;
+            overflow: hidden; 
+        }
+
+        /* Page Content Elements */
+        #page-title {
+            text-align: center;
+            margin: 0 0 40px 0;
+            line-height: 1.2;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            font-family: 'Playfair Display', serif;
+            font-size: 50px;
+            color: #000000;
+        }
+
+        ul#website-list {
+            margin-top: 20px;
+            padding-left: 50px;
+            font-family: 'Comic Neue', cursive;
+            font-size: 26px;
+            color: #1f2937;
+            line-height: 1.8;
+        }
+
+        ul#website-list li {
+            margin-bottom: 12px;
+            word-break: break-all;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- FULL SCREEN MAIN MENU OVERLAY -->
+    <div id="full-screen-menu">
+        <div class="fs-header">
+            <div class="fs-logo"><i class="fa-solid fa-file-signature"></i></div>
+            <span>Document Maker </span>
+        </div>
+        
+        <div class="fs-content">
+            <div class="fs-section-title">
+                <h2>𝓜𝓪𝓲𝓷 𝓜𝓮𝓷𝓾 </h2>
+            </div>
+            
+            <div class="fs-menu-list">
+                <!-- Option 1: Bibliography Maker -->
+                <button class="fs-menu-btn" onclick="openMaker('biblio')">
+                    <i class="fa-solid fa-list"></i> 𝙱𝚒𝚋𝚕𝚒𝚘𝚐𝚛𝚊𝚙𝚑𝚢 𝙼𝚊𝚔𝚎𝚛
+                </button>
+                
+                <!-- Option 2: Certificate Maker -->
+                <button class="fs-menu-btn" onclick="openMaker('cert')">
+                    <i class="fa-solid fa-certificate"></i> 𝙲𝚎𝚛𝚝𝚒𝚏𝚒𝚌𝚊𝚝𝚎 𝙼𝚊𝚔𝚎𝚛
+                </button>
+                
+                <!-- Option 3: Acknowledgement Maker -->
+                <button class="fs-menu-btn" onclick="openMaker('ack')">
+                    <i class="fa-solid fa-handshake"></i> 𝙰𝚌𝚔𝚗𝚘𝚠𝚕𝚎𝚍𝚐𝚎𝚖𝚎𝚗𝚝 𝙼𝚊𝚔𝚎𝚛
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- CONTROL PANEL (50%) -->
+    <div class="controls">
+        
+        <!-- MAKER INTERFACE -->
+        <div id="maker-interface">
+            <button class="back-btn" onclick="showMainMenu()">
+                <i class="fa-solid fa-arrow-left"></i> Back 
+            </button>
+
+            <h2 id="maker-title"><i class="fa-solid fa-book-open"></i> Bibliography Maker</h2>
+
+            <!-- Global: Page & Border Settings -->
+            <div class="control-group">
+                <h3><i class="fa-regular fa-file-lines"></i> Page & Border</h3>
+                <label>Page Background Color</label>
+                <input type="color" id="ctrl-page-bg" value="#ffffff" oninput="updateStyles()">
+
+                <label>Border Style</label>
+                <select id="ctrl-border-style" onchange="updateStyles()">
+                    <option value="none">None</option>
+                    <option value="solid">Solid</option>
+                    <option value="dashed">Dashed</option>
+                    <option value="dotted">Dotted</option>
+                    <option value="double" selected>Double</option>
+                    <option value="groove">Groove (3D)</option>
+                    <option value="ridge">Ridge (3D)</option>
+                    <option value="inset">Inset (3D)</option>
+                    <option value="outset">Outset (3D)</option>
+                </select>
+                <label>Border Width</label>
+                <input type="range" id="ctrl-border-width" min="1" max="30" value="12" oninput="updateStyles()">
+                <label>Border Color</label>
+                <input type="color" id="ctrl-border-color" value="#000000" oninput="updateStyles()">
+            </div>
+
+            <!-- Global: Title Settings -->
+            <div class="control-group">
+                <h3><i class="fa-solid fa-heading"></i> Title Text Settings</h3>
+                <label>Heading Text</label>
+                <input type="text" id="ctrl-title-text" value="BIBLIOGRAPHY" oninput="updateContent()">
+                
+                <label>Font Style</label>
+                <select id="ctrl-title-font" onchange="updateStyles()">
+                    <option value="'Playfair Display', serif" selected>Elegant (Playfair Display)</option>
+                    <option value="'Merriweather', serif">Classic (Merriweather)</option>
+                    <option value="'Lobster', cursive">Bold Cursive (Lobster)</option>
+                    <option value="'Patrick Hand', cursive">Handwriting (Patrick Hand)</option>
+                    <option value="'Caveat', cursive">Stylish (Caveat)</option>
+                    <option value="'Dancing Script', cursive">Cursive (Dancing Script)</option>
+                    <option value="'Indie Flower', cursive">Marker (Indie Flower)</option>
+                    <option value="'Comic Neue', cursive">Casual (Comic Neue)</option>
+                    <option value="Arial, sans-serif">Standard (Arial)</option>
+                </select>
+                
+                <label>Text Decoration</label>
+                <select id="ctrl-title-decoration" onchange="updateStyles()">
+                    <option value="underline double" selected>Double Underline</option>
+                    <option value="underline solid">Solid Underline</option>
+                    <option value="none">None</option>
+                </select>
+
+                <label>Size</label>
+                <input type="range" id="ctrl-title-size" min="30" max="80" value="50" oninput="updateStyles()">
+                <label>Color</label>
+                <input type="color" id="ctrl-title-color" value="#000000" oninput="updateStyles()">
+                <label>Underline Color</label>
+                <input type="color" id="ctrl-title-underline" value="#000000" oninput="updateStyles()">
+            </div>
+
+            <!-- ================= SECTION: BIBLIOGRAPHY ================= -->
+            <div id="section-biblio">
+                <!-- Paragraph Settings -->
+                <div class="control-group">
+                    <h3><i class="fa-solid fa-align-left"></i> Body Paragraph</h3>
+                    <label>Text</label>
+                    <textarea id="ctrl-para-text" oninput="updateContent()">For successfully completing my project file, I have taken help from the following website links:-</textarea>
+                    
+                    <label>Font Style</label>
+                    <select id="ctrl-para-font" onchange="updateStyles()">
+                        <option value="'Comic Neue', cursive" selected>Casual (Comic Neue)</option>
+                        <option value="'Patrick Hand', cursive">Handwriting (Patrick Hand)</option>
+                        <option value="'Caveat', cursive">Stylish (Caveat)</option>
+                        <option value="'Dancing Script', cursive">Cursive (Dancing Script)</option>
+                        <option value="'Indie Flower', cursive">Marker (Indie Flower)</option>
+                        <option value="'Playfair Display', serif">Elegant (Playfair Display)</option>
+                        <option value="'Merriweather', serif">Classic (Merriweather)</option>
+                        <option value="Arial, sans-serif">Standard (Arial)</option>
+                    </select>
+                    <label>Size</label>
+                    <input type="range" id="ctrl-para-size" min="16" max="50" value="26" oninput="updateStyles()">
+                    <label>Color</label>
+                    <input type="color" id="ctrl-para-color" value="#1f2937" oninput="updateStyles()">
+                </div>
+
+                <!-- Website Links Settings -->
+                <div class="control-group">
+                    <h3><i class="fa-solid fa-link"></i> Website Links</h3>
+                    <label>Add Website</label>
+                    <div class="add-website-box">
+                        <input type="text" id="new-website" placeholder="www.example.com">
+                        <button onclick="addWebsite()"><i class="fa-solid fa-plus"></i> Add</button>
+                    </div>
+                    <ul id="sidebar-website-list" class="sidebar-list"></ul>
+
+                    <label>Font Style</label>
+                    <select id="ctrl-link-font" onchange="updateStyles()">
+                        <option value="'Comic Neue', cursive" selected>Casual (Comic Neue)</option>
+                        <option value="'Patrick Hand', cursive">Handwriting (Patrick Hand)</option>
+                        <option value="'Caveat', cursive">Stylish (Caveat)</option>
+                        <option value="'Dancing Script', cursive">Cursive (Dancing Script)</option>
+                        <option value="'Indie Flower', cursive">Marker (Indie Flower)</option>
+                        <option value="'Playfair Display', serif">Elegant (Playfair Display)</option>
+                        <option value="'Merriweather', serif">Classic (Merriweather)</option>
+                        <option value="Arial, sans-serif">Standard (Arial)</option>
+                    </select>
+                    <label>Size</label>
+                    <input type="range" id="ctrl-link-size" min="16" max="50" value="26" oninput="updateStyles()">
+                    <label>Color</label>
+                    <input type="color" id="ctrl-link-color" value="#1f2937" oninput="updateStyles()">
+                </div>
+            </div>
+
+            <!-- ================= SECTION: CERTIFICATE ================= -->
+            <div id="section-cert" style="display:none;">
+                <div class="control-group">
+                    <h3><i class="fa-solid fa-pen-to-square"></i> Certificate Details</h3>
+                    <label>Certificate Body</label> 
+                    <textarea id="cert-in-body" oninput="updateContent()">This is to certify that Adarsh mishra of class 11th 'D' of Saraswati sr. sec. Vidya Mandir has successfully completed the project work on Computer(c++) in practical examination in the year 2016-2017.</textarea>
+                    <label>Date</label> <input type="text" id="cert-in-date" value="20/05/2017" oninput="updateContent()">
+                </div>
+                <div class="control-group">
+                    <h3><i class="fa-solid fa-font"></i> Body Text Styling</h3>
+                    <label>Font Style</label>
+                    <select id="ctrl-cert-font" onchange="updateStyles()">
+                        <option value="'Playfair Display', serif">Elegant (Playfair Display)</option>
+                        <option value="'Merriweather', serif" selected>Classic (Merriweather)</option>
+                        <option value="'Caveat', cursive">Stylish (Caveat)</option>
+                        <option value="Arial, sans-serif">Standard (Arial)</option>
+                    </select>
+                    <label>Size</label> <input type="range" id="ctrl-cert-size" min="16" max="50" value="26" oninput="updateStyles()">
+                    <label>Color</label> <input type="color" id="ctrl-cert-color" value="#1f2937" oninput="updateStyles()">
+                </div>
+            </div>
+
+            <!-- ================= SECTION: ACKNOWLEDGEMENT ================= -->
+            <div id="section-ack" style="display:none;">
+                <div class="control-group">
+                    <h3><i class="fa-solid fa-pen-to-square"></i> Acknowledgement Details</h3>
+                    <label>Paragraph 1</label>
+                    <textarea id="ack-in-p1" oninput="updateContent()">I would like to express my special thanks of gratitude to my teacher Mr.Sanjay Gupta, who gave me the golden opportunity to do this wonderful project of ACCOUNTANCY.</textarea>
+                    <label>Paragraph 2</label>
+                    <textarea id="ack-in-p2" oninput="updateContent()">Who also helped me in completing my project. I came to know about so many new things I am really thankful to them.</textarea>
+                    <label>Paragraph 3</label>
+                    <textarea id="ack-in-p3" oninput="updateContent()">Secondly i would also like to thank my parents and friends who helped me a lot in finalizing this project within the limited time frame.</textarea>
+                    
+                    <label>Student Name</label> <input type="text" id="ack-in-name" value="Yashika Bhartiya" oninput="updateContent()">
+                    <label>Class / Roll No</label> <input type="text" id="ack-in-class" value="XII Commerce" oninput="updateContent()">
+                </div>
+                <div class="control-group">
+                    <h3><i class="fa-solid fa-font"></i> Body Text Styling</h3>
+                    <label>Font Style</label>
+                    <select id="ctrl-ack-font" onchange="updateStyles()">
+                        <option value="'Playfair Display', serif">Elegant (Playfair Display)</option>
+                        <option value="'Merriweather', serif" selected>Classic (Merriweather)</option>
+                        <option value="'Patrick Hand', cursive">Handwriting (Patrick Hand)</option>
+                        <option value="'Caveat', cursive">Stylish (Caveat)</option>
+                        <option value="Arial, sans-serif">Standard (Arial)</option>
+                    </select>
+                    <label>Size</label> <input type="range" id="ctrl-ack-size" min="16" max="50" value="24" oninput="updateStyles()">
+                    <label>Color</label> <input type="color" id="ctrl-ack-color" value="#1f2937" oninput="updateStyles()">
+                </div>
+            </div>
+
+            <button class="download-btn" id="download-btn" onclick="downloadImage()">
+                <i class="fa-solid fa-file-arrow-down"></i> Download A4 Image
+            </button>
+        </div>
+    </div>
+
+    <!-- PREVIEW AREA (50%) -->
+    <div class="preview-area">
+        <div class="a4-page-container">
+            <div class="a4-page" id="a4-page">
+                
+                <!-- Shared Title -->
+                <h1 id="page-title">BIBLIOGRAPHY</h1>
+                
+                <!-- 1. Bibliography Layout -->
+                <div id="layout-biblio">
+                    <div id="page-content" style="font-family: 'Comic Neue', cursive; font-size: 26px; color: #1f2937; line-height: 1.6; text-align: justify;"></div>
+                    <ul id="website-list">
+                        <!-- Managed via JS -->
+                    </ul>
+                </div>
+
+                <!-- 2. Certificate Layout -->
+                <div id="layout-cert" style="display:none; font-family: 'Merriweather', serif; font-size: 26px; color: #1f2937; line-height: 2;">
+                    <div id="cert-out-body" style="text-align: justify; margin-top: 60px;">
+                        This is to certify that Adarsh mishra of class 11th 'D' of Saraswati sr. sec. Vidya Mandir has successfully completed the project work on Computer(c++) in practical examination in the year 2016-2017.
+                    </div>
+                    <div style="display: flex; justify-content: space-between; margin-top: 120px;">
+                        <div>Date:- <span id="cert-out-date">20/05/2017</span></div>
+                        <div style="font-family: 'Playfair Display', serif; font-style: italic; font-weight: bold; font-size: 30px;">Signature</div>
+                    </div>
+                </div>
+
+                <!-- 3. Acknowledgement Layout -->
+                <div id="layout-ack" style="display:none; font-family: 'Merriweather', serif; font-size: 24px; color: #1f2937; line-height: 1.8; font-style: italic; text-align: center;">
+                    <div id="ack-body" style="margin-top: 30px;">
+                        <p id="ack-out-p1" style="margin-bottom: 20px;">I would like to express my special thanks of gratitude to my teacher...</p>
+                        <p id="ack-out-p2" style="margin-bottom: 20px;">Who also helped me...</p>
+                        <p id="ack-out-p3" style="margin-bottom: 20px;">Secondly i would...</p>
+                    </div>
+                    <div style="text-align: right; margin-top: 80px; font-style: normal; font-weight: bold;">
+                        <div id="ack-out-name">Yashika Bhartiya</div>
+                        <div id="ack-out-class">XII Commerce</div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Track current document type (biblio, cert, ack)
+        let currentMode = 'biblio';
+
+        // Show Main Menu overlay
+        function showMainMenu() {
+            document.getElementById('full-screen-menu').style.display = 'flex';
+        }
+
+        // Open specific Maker Interface
+        function openMaker(mode) {
+            currentMode = mode;
+            // Hide the full screen menu overlay
+            document.getElementById('full-screen-menu').style.display = 'none';
+
+            // Hide all layout sections & controls inside the maker
+            document.getElementById('section-biblio').style.display = 'none';
+            document.getElementById('section-cert').style.display = 'none';
+            document.getElementById('section-ack').style.display = 'none';
+
+            document.getElementById('layout-biblio').style.display = 'none';
+            document.getElementById('layout-cert').style.display = 'none';
+            document.getElementById('layout-ack').style.display = 'none';
+
+            // Update Maker Title & default document titles based on selected mode
+            const makerTitle = document.getElementById('maker-title');
+            const titleInput = document.getElementById('ctrl-title-text');
+            const decorationSelect = document.getElementById('ctrl-title-decoration');
+
+            if (mode === 'biblio') {
+                makerTitle.innerHTML = '<i class="fa-solid fa-list"></i> Bibliography Maker';
+                document.getElementById('section-biblio').style.display = 'block';
+                document.getElementById('layout-biblio').style.display = 'block';
+                titleInput.value = "BIBLIOGRAPHY";
+                decorationSelect.value = "underline double";
+            } else if (mode === 'cert') {
+                makerTitle.innerHTML = '<i class="fa-solid fa-certificate"></i> Certificate Maker';
+                document.getElementById('section-cert').style.display = 'block';
+                document.getElementById('layout-cert').style.display = 'block';
+                titleInput.value = "Certificate";
+                decorationSelect.value = "none";
+            } else if (mode === 'ack') {
+                makerTitle.innerHTML = '<i class="fa-solid fa-handshake"></i> Acknowledgement Maker';
+                document.getElementById('section-ack').style.display = 'block';
+                document.getElementById('layout-ack').style.display = 'block';
+                titleInput.value = "ACKNOWLEDGEMENT";
+                decorationSelect.value = "none";
+            }
+
+            updateContent();
+            updateStyles();
+            resizePreview(); // Ensure scale is correct when opened
+        }
+
+        // Dynamically scales the exact 794x1123 box to fit inside the right 50% screen safely!
+        function resizePreview() {
+            const previewArea = document.querySelector('.preview-area');
+            const container = document.querySelector('.a4-page-container');
+            
+            const areaWidth = previewArea.clientWidth;
+            const areaHeight = previewArea.clientHeight;
+            
+            const scaleX = (areaWidth - 40) / 794;
+            const scaleY = (areaHeight - 40) / 1123;
+            
+            let finalScale = Math.min(scaleX, scaleY);
+            if (finalScale < 0.05) finalScale = 0.05; 
+
+            container.style.transform = `translate(-50%, -50%) scale(${finalScale})`;
+        }
+        
+        window.addEventListener('resize', resizePreview);
+
+        let linksArray = ["www.google.com", "www.wikipedia.com", "www.youtube.com"];
+
+        function renderWebsites() {
+            const sidebarList = document.getElementById('sidebar-website-list');
+            const previewList = document.getElementById('website-list');
+
+            sidebarList.innerHTML = '';
+            previewList.innerHTML = '';
+
+            linksArray.forEach((url, index) => {
+                const liSidebar = document.createElement('li');
+                liSidebar.innerHTML = `
+                    <span>${url}</span>
+                    <button onclick="deleteWebsite(${index})"><i class="fa-solid fa-trash"></i></button>
+                `;
+                sidebarList.appendChild(liSidebar);
+
+                const liPreview = document.createElement('li');
+                liPreview.innerText = url;
+                previewList.appendChild(liPreview);
+            });
+        }
+
+        // Update Text Content dynamically across all modes
+        function updateContent() {
+            document.getElementById('page-title').innerText = document.getElementById('ctrl-title-text').value;
+
+            if (currentMode === 'biblio') {
+                document.getElementById('page-content').innerText = document.getElementById('ctrl-para-text').value;
+            } else if (currentMode === 'cert') {
+                document.getElementById('cert-out-body').innerText = document.getElementById('cert-in-body').value;
+                document.getElementById('cert-out-date').innerText = document.getElementById('cert-in-date').value;
+            } else if (currentMode === 'ack') {
+                document.getElementById('ack-out-p1').innerText = document.getElementById('ack-in-p1').value;
+                document.getElementById('ack-out-p2').innerText = document.getElementById('ack-in-p2').value;
+                document.getElementById('ack-out-p3').innerText = document.getElementById('ack-in-p3').value;
+                document.getElementById('ack-out-name').innerText = document.getElementById('ack-in-name').value;
+                document.getElementById('ack-out-class').innerText = document.getElementById('ack-in-class').value;
+            }
+        }
+
+        // Apply CSS Styles based on user selection
+        function updateStyles() {
+            const page = document.getElementById('a4-page');
+            const title = document.getElementById('page-title');
+
+            // Page Background & Border (Global)
+            page.style.backgroundColor = document.getElementById('ctrl-page-bg').value;
+            page.style.borderStyle = document.getElementById('ctrl-border-style').value;
+            page.style.borderWidth = document.getElementById('ctrl-border-width').value + 'px';
+            page.style.borderColor = document.getElementById('ctrl-border-color').value;
+
+            // Title Styles (Global)
+            title.style.fontFamily = document.getElementById('ctrl-title-font').value;
+            title.style.fontSize = document.getElementById('ctrl-title-size').value + 'px';
+            title.style.color = document.getElementById('ctrl-title-color').value;
+            
+            let deco = document.getElementById('ctrl-title-decoration').value;
+            if (deco === 'none') {
+                title.style.textDecoration = 'none';
+            } else {
+                title.style.textDecoration = `${deco} ${document.getElementById('ctrl-title-underline').value}`;
+            }
+
+            // Mode-specific styles
+            if (currentMode === 'biblio') {
+                const content = document.getElementById('page-content');
+                const list = document.getElementById('website-list');
+                
+                content.style.fontFamily = document.getElementById('ctrl-para-font').value;
+                content.style.fontSize = document.getElementById('ctrl-para-size').value + 'px';
+                content.style.color = document.getElementById('ctrl-para-color').value;
+
+                list.style.fontFamily = document.getElementById('ctrl-link-font').value;
+                list.style.fontSize = document.getElementById('ctrl-link-size').value + 'px';
+                list.style.color = document.getElementById('ctrl-link-color').value;
+
+            } else if (currentMode === 'cert') {
+                const certLayout = document.getElementById('layout-cert');
+                certLayout.style.fontFamily = document.getElementById('ctrl-cert-font').value;
+                certLayout.style.fontSize = document.getElementById('ctrl-cert-size').value + 'px';
+                certLayout.style.color = document.getElementById('ctrl-cert-color').value;
+
+            } else if (currentMode === 'ack') {
+                const ackLayout = document.getElementById('layout-ack');
+                ackLayout.style.fontFamily = document.getElementById('ctrl-ack-font').value;
+                ackLayout.style.fontSize = document.getElementById('ctrl-ack-size').value + 'px';
+                ackLayout.style.color = document.getElementById('ctrl-ack-color').value;
+            }
+        }
+
+        function addWebsite() {
+            const input = document.getElementById('new-website');
+            const url = input.value.trim();
+            if(url !== "") {
+                linksArray.push(url);
+                input.value = "";
+                renderWebsites();
+            }
+        }
+
+        function deleteWebsite(index) {
+            linksArray.splice(index, 1);
+            renderWebsites();
+        }
+
+        function downloadImage() {
+            const page = document.getElementById('a4-page');
+            const container = document.querySelector('.a4-page-container');
+            const btn = document.getElementById('download-btn');
+            
+            const originalBtnHtml = btn.innerHTML;
+            btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Generating...';
+
+            const offScreenContainer = document.createElement('div');
+            offScreenContainer.style.position = 'absolute';
+            offScreenContainer.style.top = '-9999px';
+            offScreenContainer.style.left = '-9999px';
+            document.body.appendChild(offScreenContainer);
+
+            offScreenContainer.appendChild(page);
+
+            html2canvas(page, {
+                scale: 2, 
+                backgroundColor: document.getElementById('ctrl-page-bg').value,
+                useCORS: true
+            }).then(canvas => {
+                
+                container.appendChild(page);
+                document.body.removeChild(offScreenContainer);
+                btn.innerHTML = originalBtnHtml;
+
+                const link = document.createElement('a');
+                // Name file dynamically based on current mode
+                let filename = 'My_Document.png';
+                if(currentMode === 'biblio') filename = 'My_Bibliography.png';
+                if(currentMode === 'cert') filename = 'My_Certificate.png';
+                if(currentMode === 'ack') filename = 'My_Acknowledgement.png';
+                
+                link.download = filename;
+                link.href = canvas.toDataURL('image/png');
+                link.click();
+            });
+        }
+
+        window.onload = function() {
+            // Show main menu overlay on initial load
+            showMainMenu();
+            renderWebsites();
+            updateStyles();
+        };
+    </script>
+</body>
+</html>

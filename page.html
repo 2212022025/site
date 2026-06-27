@@ -1,0 +1,482 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Ultimate A4 Front Page Maker</title>
+    
+    <!-- Mega Font Collection from Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Alfa+Slab+One&family=Bree+Serif&family=Caveat:wght@600&family=Cinzel:wght@700;900&family=Lobster&family=Montserrat:wght@400;600;800&family=Oswald:wght@500;700&family=Pacifico&family=Playfair+Display:ital,wght@0,700;1,700&family=Righteous&family=Roboto:wght@500;700;900&display=swap" rel="stylesheet">
+    
+    <!-- FontAwesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <style>
+        :root {
+            --a4-width: 794px;
+            --a4-height: 1123px;
+            --ui-bg: #1e1e2f;
+            --ui-panel: #2a2a40;
+            --ui-text: #ffffff;
+            --ui-accent: #00ff88;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Montserrat', sans-serif; background-color: var(--ui-bg); overflow: hidden; display: flex; }
+
+        /* --- Intro Screen --- */
+        #intro-screen {
+            position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
+            background: radial-gradient(circle at center, #1a1a2e 0%, #0f0f1a 100%);
+            display: flex; flex-direction: column; justify-content: center; align-items: center;
+            z-index: 9999; transition: opacity 0.6s ease;
+        }
+        .start-btn {
+            background: linear-gradient(135deg, #00ff88, #00b8ff); color: #000; border: none; padding: 20px 60px;
+            font-size: 24px; font-weight: 900; border-radius: 50px; cursor: pointer; text-transform: uppercase; 
+            letter-spacing: 2px; box-shadow: 0 10px 40px rgba(0, 255, 136, 0.4); transition: all 0.3s ease;
+        }
+        .start-btn:hover { transform: translateY(-5px) scale(1.05); box-shadow: 0 15px 50px rgba(0, 255, 136, 0.6); }
+
+        /* --- Main Layout --- */
+        #main-app { display: none; height: 100vh; width: 100vw; flex-direction: row; }
+
+        /* --- Sidebar UI --- */
+        .sidebar {
+            width: 420px; background: var(--ui-panel); color: var(--ui-text);
+            padding: 20px; overflow-y: auto; display: flex; flex-direction: column; gap: 15px;
+            box-shadow: 5px 0 25px rgba(0,0,0,0.5); z-index: 10;
+        }
+        .sidebar::-webkit-scrollbar { width: 6px; }
+        .sidebar::-webkit-scrollbar-thumb { background: #555; border-radius: 4px; }
+        .sidebar h2 { font-size: 18px; text-align: center; color: var(--ui-accent); text-transform: uppercase; letter-spacing: 1px; border-bottom: 2px solid #444; padding-bottom: 10px; margin-bottom: 5px; }
+
+        /* Element Card Styling */
+        .input-card { background: rgba(0,0,0,0.25); padding: 12px; border-radius: 10px; border: 1px solid rgba(255,255,255,0.05); }
+        .input-card label { display: block; font-size: 12px; font-weight: 700; color: #00ff88; margin-bottom: 8px; text-transform: uppercase; letter-spacing: 0.5px;}
+        .input-card input[type="text"], .input-card input[type="file"] {
+            width: 100%; padding: 10px; background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2);
+            color: white; border-radius: 6px; font-family: inherit; font-size: 14px; transition: 0.3s; margin-bottom: 2px;
+        }
+        .input-card input:focus { outline: none; border-color: var(--ui-accent); background: rgba(0,0,0,0.4); }
+        
+        /* Inline Controls (Icons, Color, Size, Font) */
+        .control-row { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; margin-top: 10px; }
+        .control-group { display: flex; align-items: center; gap: 6px; }
+        .color-group { flex: 0 0 auto; }
+        .size-group { flex: 1; min-width: 80px; }
+        .font-group { flex: 1.5; min-width: 120px; }
+        
+        .control-icon { color: #00ff88; font-size: 14px; opacity: 0.9; }
+        
+        .control-group input[type="color"] { width: 32px; height: 32px; border: none; border-radius: 6px; cursor: pointer; background: transparent; padding: 0; }
+        .control-group input[type="range"] { width: 100%; cursor: pointer; accent-color: var(--ui-accent); }
+        .control-group select { 
+            width: 100%; padding: 8px; background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2);
+            color: white; border-radius: 6px; font-size: 12px; outline: none; cursor: pointer;
+        }
+        .control-group select option { background: #2a2a40; color: white; }
+
+        .global-settings { display: flex; gap: 10px; margin-bottom: 10px; }
+        .global-settings select { flex: 1; padding: 10px; background: rgba(0,0,0,0.3); border: 1px solid #555; color: white; border-radius: 6px; font-size: 13px; }
+
+        /* Improved Download Button */
+        .download-btn {
+            background: linear-gradient(135deg, #ff007a, #7a00ff);
+            color: white; border: none; padding: 16px; border-radius: 12px; font-size: 16px; font-weight: 900; cursor: pointer;
+            text-transform: uppercase; letter-spacing: 1px; box-shadow: 0 6px 20px rgba(122, 0, 255, 0.4); transition: all 0.3s ease;
+            margin-top: 10px; margin-bottom: 20px;
+        }
+        .download-btn:hover { 
+            transform: translateY(-4px) scale(1.02); 
+            box-shadow: 0 10px 30px rgba(122, 0, 255, 0.6); 
+            background: linear-gradient(135deg, #ff1a8b, #8b1aff); 
+        }
+        .download-btn:active { 
+            transform: translateY(2px) scale(0.98); 
+            box-shadow: 0 3px 10px rgba(122, 0, 255, 0.4); 
+        }
+
+        /* --- Mobile Optimizations --- */
+        @media (max-width: 850px) {
+            .sidebar { width: 45%; padding: 10px; }
+            .preview-wrapper { padding: 10px !important; }
+            .input-card { padding: 8px; }
+            .font-group { flex: 100%; } /* Bumps font selection to the next line nicely on small screens */
+            .global-settings { flex-direction: column; }
+        }
+
+        /* --- Preview Area & A4 Setup --- */
+        .preview-wrapper { flex: 1; background: #12121a; display: flex; justify-content: center; align-items: center; overflow: hidden; padding: 20px; }
+        
+        .a4-container {
+            width: var(--a4-width) !important; height: var(--a4-height) !important;
+            min-width: var(--a4-width) !important; min-height: var(--a4-height) !important;
+            max-width: var(--a4-width) !important; max-height: var(--a4-height) !important;
+            flex-shrink: 0; background: #ffffff; position: relative; box-shadow: 0 20px 50px rgba(0,0,0,0.8);
+            transform-origin: center center; 
+        }
+
+        /* --- Border Styles --- */
+        .page-border { position: absolute; top: 15px; left: 15px; right: 15px; bottom: 15px; pointer-events: none; z-index: 5; }
+        
+        /* New & Existing Stylish Borders */
+        .border-art-deco { border: 6px solid #222; outline: 2px solid #222; outline-offset: -12px; box-shadow: inset 0 0 0 8px #fff, inset 0 0 0 10px #222; }
+        .border-elegant { border: 1px solid #000; outline: 1px dashed #000; outline-offset: -8px; }
+        .border-classic-gold { border: 5px solid #d4af37; outline: 2px solid #d4af37; outline-offset: -10px; }
+        .border-modern-dark { border: 12px solid #222; border-radius: 15px; }
+        .border-thick-thin { border: 8px double #111; outline: 1px solid #111; outline-offset: -12px; }
+        .border-frame-3d { border: 10px groove #ddd; }
+        
+        .border-double { border: 8px double #222; padding: 5px; }
+        .border-solid { border: 6px solid #111; outline: 2px solid #111; outline-offset: -12px; }
+        .border-single { border: 4px solid #111; }
+        .border-dashed { border: 5px dashed #333; }
+
+        /* --- Page Content Layout --- */
+        .page-content {
+            position: absolute; top: 25px; left: 25px; right: 25px; bottom: 25px;
+            display: flex; flex-direction: column; justify-content: space-between; align-items: center;
+            padding: 15px; z-index: 10;
+        }
+
+        /* Top Section (SVG Curve handles School Name perfectly) */
+        .section-top { display: flex; flex-direction: column; align-items: center; width: 100%; flex: 0 0 auto; }
+        .school-wrapper { height: 160px; width: 100%; display: flex; justify-content: center; overflow: visible; }
+        .logo-preview { width: 140px; height: 140px; object-fit: contain; margin-top: -30px; display: none; }
+        .location-text { font-weight: 700; margin-top: 5px; text-transform: uppercase; }
+
+        .session-wrapper { margin-top: 15px; flex: 0 0 auto; }
+        .ribbon-banner {
+            position: relative; background: #1a428a; color: #f1c40f; padding: 0.4em 1.5em; font-weight: 900; text-transform: uppercase;
+        }
+        .ribbon-banner::before, .ribbon-banner::after { content: ''; position: absolute; top: 0; width: 0; height: 0; border-top: 1em solid transparent; border-bottom: 1em solid transparent; }
+        .ribbon-banner::before { left: -0.9em; border-right: 0.9em solid #1a428a; }
+        .ribbon-banner::after { right: -0.9em; border-left: 0.9em solid #1a428a; }
+
+        /* Middle Section */
+        .section-middle { display: flex; flex-direction: column; align-items: center; justify-content: center; width: 100%; flex: 1 1 auto; margin: 5px 0; }
+        .project-on { font-size: 26px; font-weight: 800; color: #555; margin-bottom: 5px; }
+        .divider { width: 80%; height: 2px; background: #555; margin: 10px 0; }
+        .topic-text { font-weight: 900; text-transform: uppercase; text-align: center; }
+
+        /* Bottom Section */
+        .section-bottom { width: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; flex: 1 1 auto; gap: 8px; text-align: center;}
+        
+        .detail-block { font-weight: 700; line-height: 1.3; margin-bottom: 5px; }
+        .detail-block span.title { font-size: 20px; color: #666; display: block; margin-bottom: 2px; }
+        
+        .c-teacher { text-transform: capitalize; }
+        .c-student { letter-spacing: 1px; text-transform: capitalize;}
+        .c-subject { font-weight: 900; }
+        
+        /* Converted to column to put Roll Number neatly below The Class */
+        .class-roll { display: flex; flex-direction: column; justify-content: center; align-items: center; gap: 8px; font-weight: 800; white-space: nowrap; margin-top: 10px; }
+
+    </style>
+</head>
+<body>
+
+    <!-- Intro Start Screen -->
+    <div id="intro-screen">
+        <button class="start-btn" onclick="initApp()">
+            <i class="fa-solid fa-wand-magic-sparkles"></i> 𝙾𝚙𝚎𝚗 𝙵𝚛𝚘𝚗𝚝 𝙿𝚊𝚐𝚎 𝚖𝚊𝚔𝚎𝚛 
+        </button>
+    </div>
+
+    <!-- Main Builder Application -->
+    <div id="main-app">
+        
+        <!-- Sidebar Controls -->
+        <div class="sidebar" id="controls-container">
+            <h2><i class="fa-solid fa-sliders"></i> Global Theme</h2>
+            
+            <div class="global-settings">
+                <select id="sel-global-font" onchange="updateGlobalStyle()">
+                    <option value="'Montserrat', sans-serif">Theme: Modern Bold</option>
+                    <option value="'Cinzel', serif">Theme: Elegant Serif</option>
+                    <option value="'Righteous', cursive">Theme: Stylized</option>
+                </select>
+                <!-- Vintage Floral removed. New Borders Added Here -->
+                <select id="sel-global-border" onchange="updateGlobalStyle()">
+                    <option value="border-art-deco">Border: Art Deco (Default)</option>
+                    <option value="border-classic-gold">Border: Classic Gold</option>
+                    <option value="border-modern-dark">Border: Modern Dark</option>
+                    <option value="border-thick-thin">Border: Thick & Thin</option>
+                    <option value="border-frame-3d">Border: 3D Groove Frame</option>
+                    <option value="border-elegant">Border: Elegant Thin</option>
+                    <option value="border-double">Border: Standard Double</option>
+                    <option value="border-solid">Border: Standard Solid</option>
+                    <option value="border-single">Border: Single Line</option>
+                    <option value="border-dashed">Border: Dashed Line</option>
+                    <option value="none">Border: None</option>
+                </select>
+            </div>
+
+            <h2><i class="fa-solid fa-pen-to-square"></i> Edit Elements</h2>
+            
+            <!-- JavaScript will inject all the individual cards here dynamically so the HTML stays clean -->
+
+            <div class="input-card">
+                <label>Upload School Logo</label>
+                <input type="file" id="in-logo" accept="image/*" onchange="handleLogo(event)">
+            </div>
+
+            <button class="download-btn" onclick="exportA4()">
+                <i class="fa-solid fa-download"></i> Save as Image
+            </button>
+        </div>
+
+        <!-- Live Preview Area -->
+        <div class="preview-wrapper" id="preview-area">
+            <div class="a4-container" id="a4-page">
+                <!-- Floral removed, replaced with Art Deco default -->
+                <div id="page-border" class="page-border border-art-deco"></div>
+
+                <div class="page-content" id="page-content">
+                    
+                    <div class="section-top" id="sec-top">
+                        <!-- Rock Solid SVG Text Curve (Fixes Stacking Bug) -->
+                        <div class="school-wrapper">
+                            <svg viewBox="0 0 794 150" width="100%" height="150" style="overflow: visible;">
+                                <path id="school-arc" d="M 40, 140 Q 397, -30 754, 140" fill="transparent" />
+                                <text text-anchor="middle" dominant-baseline="middle">
+                                    <textPath href="#school-arc" startOffset="50%" id="out-school">
+                                        <!-- Handled by JS -->
+                                    </textPath>
+                                </text>
+                            </svg>
+                        </div>
+
+                        <img id="out-logo" class="logo-preview" src="">
+                        <div class="location-text" id="out-location"></div>
+                        
+                        <div class="session-wrapper" id="wrap-session" style="display:none;">
+                            <div class="ribbon-banner" id="out-session"></div>
+                        </div>
+                    </div>
+
+                    <div class="section-middle" id="sec-mid" style="display:none;">
+                        <div class="divider"></div>
+                        <div class="project-on">A Project On</div>
+                        <div class="topic-text" id="out-topic"></div>
+                        <div class="divider"></div>
+                    </div>
+
+                    <div class="section-bottom" id="sec-bot">
+                        <div class="detail-block" id="wrap-teacher" style="display:none;">
+                            <span class="title">Submitted To</span>
+                            <div class="c-teacher" id="out-teacher"></div>
+                        </div>
+                        
+                        <div class="detail-block" id="wrap-student" style="display:none;">
+                            <span class="title">Submitted By</span>
+                            <div class="c-student" id="out-student"></div>
+                        </div>
+
+                        <div class="detail-block" id="wrap-subject" style="display:none;">
+                            <span class="title">Subject's Name:</span>
+                            <div class="c-subject" id="out-subject"></div>
+                        </div>
+
+                        <div class="class-roll" id="wrap-class-roll" style="display:none;">
+                            <span id="wrap-class" style="display:none;">Class: <span id="out-class"></span></span>
+                            <span id="wrap-roll" style="display:none;">Roll No: <span id="out-roll"></span></span>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+
+    <script>
+        // Massive Font Library
+        const fontOptions = `
+            <option value="inherit">Inherit Theme Font</option>
+            <option value="'Montserrat', sans-serif">Montserrat (Clean)</option>
+            <option value="'Oswald', sans-serif">Oswald (Tall)</option>
+            <option value="'Roboto', sans-serif">Roboto (Modern)</option>
+            <option value="'Cinzel', serif">Cinzel (Classic)</option>
+            <option value="'Playfair Display', serif">Playfair (Elegant)</option>
+            <option value="'Bree Serif', serif">Bree Serif (Soft)</option>
+            <option value="'Alfa Slab One', serif">Alfa Slab (Chunky)</option>
+            <option value="'Righteous', cursive">Righteous (Stylized)</option>
+            <option value="'Lobster', cursive">Lobster (Fancy)</option>
+            <option value="'Pacifico', cursive">Pacifico (Brush)</option>
+            <option value="'Caveat', cursive">Caveat (Handwriting)</option>
+        `;
+
+        // Configuration for every text block on the page
+        const formElements = [
+            { id: 'school', label: 'School Name', defaultText: 'MY SCHOOL NAME', defaultColor: '#333333', defaultSize: 42, min: 20, max: 70 },
+            { id: 'location', label: 'Location', defaultText: 'Varanasi', defaultColor: '#444444', defaultSize: 22, min: 14, max: 40 },
+            { id: 'session', label: 'Session Ribbon', defaultText: '2024-2025', defaultColor: '#f1c40f', defaultSize: 24, min: 14, max: 40 },
+            { id: 'topic', label: 'Project Topic', defaultText: 'Grammar', defaultColor: '#111111', defaultSize: 48, min: 20, max: 80 },
+            { id: 'teacher', label: 'Submitted To', defaultText: 'Raj Sir', defaultColor: '#0097e6', defaultSize: 32, min: 16, max: 50 },
+            { id: 'student', label: 'Submitted By', defaultText: 'Utkarsh', defaultColor: '#5c2c16', defaultSize: 38, min: 16, max: 60 },
+            { id: 'subject', label: 'Subject Name', defaultText: 'Information Tech', defaultColor: '#27ae60', defaultSize: 30, min: 16, max: 50 },
+            { id: 'class', label: 'Class', defaultText: '8th', defaultColor: '#444444', defaultSize: 28, min: 14, max: 40 },
+            { id: 'roll', label: 'Roll Number', defaultText: '205', defaultColor: '#444444', defaultSize: 28, min: 14, max: 40 }
+        ];
+
+        function initApp() {
+            document.getElementById('intro-screen').style.opacity = '0';
+            setTimeout(() => {
+                document.getElementById('intro-screen').style.display = 'none';
+                document.getElementById('main-app').style.display = 'flex';
+                
+                buildUI();
+                scalePreview(); 
+                
+                // Initialize all elements
+                formElements.forEach(el => updateElement(el.id));
+            }, 600);
+        }
+
+        // Dynamically build the sidebar so the HTML stays incredibly clean
+        // NOW FEATURES ICONS FOR COLOR, SIZE, AND FONT!
+        function buildUI() {
+            const container = document.getElementById('controls-container');
+            const insertPoint = container.children[container.children.length - 2]; // Before logo upload
+
+            formElements.forEach(el => {
+                const card = document.createElement('div');
+                card.className = 'input-card';
+                card.innerHTML = `
+                    <label>${el.label}</label>
+                    <input type="text" id="in-${el.id}-text" value="${el.defaultText}" oninput="updateElement('${el.id}')" placeholder="Enter text...">
+                    
+                    <div class="control-row">
+                        <div class="control-group color-group">
+                            <i class="fa-solid fa-palette control-icon" title="Text Color"></i>
+                            <input type="color" id="in-${el.id}-color" value="${el.defaultColor}" title="Text Color" oninput="updateElement('${el.id}')">
+                        </div>
+                        
+                        <div class="control-group size-group">
+                            <i class="fa-solid fa-text-height control-icon" title="Text Size"></i>
+                            <input type="range" id="in-${el.id}-size" min="${el.min}" max="${el.max}" value="${el.defaultSize}" title="Text Size" oninput="updateElement('${el.id}')">
+                        </div>
+                        
+                        <div class="control-group font-group">
+                            <i class="fa-solid fa-font control-icon" title="Font Style"></i>
+                            <select id="in-${el.id}-font" title="Choose Font" onchange="updateElement('${el.id}')">
+                                ${fontOptions}
+                            </select>
+                        </div>
+                    </div>
+                `;
+                container.insertBefore(card, insertPoint);
+            });
+        }
+
+        // Master function to handle specific sizes, colors, and fonts per element
+        function updateElement(id) {
+            const text = document.getElementById(`in-${id}-text`).value;
+            const color = document.getElementById(`in-${id}-color`).value;
+            const size = document.getElementById(`in-${id}-size`).value;
+            const font = document.getElementById(`in-${id}-font`).value;
+
+            const out = document.getElementById(`out-${id}`);
+
+            if (id === 'school') {
+                // SVG specific attributes
+                out.textContent = text.toUpperCase();
+                out.setAttribute('fill', color);
+                out.setAttribute('font-size', size + 'px');
+                if(font !== 'inherit') out.setAttribute('font-family', font);
+                else out.removeAttribute('font-family');
+            } else {
+                // Standard DOM CSS
+                out.innerText = text;
+                out.style.color = color;
+                out.style.fontSize = size + 'px';
+                out.style.fontFamily = font;
+            }
+
+            // Show/Hide Wrappers intelligently
+            const wrap = document.getElementById(`wrap-${id}`);
+            if (wrap) {
+                if (id === 'class' || id === 'roll') {
+                    wrap.style.display = text.trim() ? 'inline' : 'none';
+                    const cText = document.getElementById('in-class-text').value;
+                    const rText = document.getElementById('in-roll-text').value;
+                    document.getElementById('wrap-class-roll').style.display = (cText.trim() || rText.trim()) ? 'flex' : 'none';
+                    
+                    // Apply class/roll size to the wrapper container as well so "Class:" label scales
+                    document.getElementById('wrap-class-roll').style.fontSize = size + 'px';
+                    document.getElementById('wrap-class-roll').style.color = color;
+                } else {
+                    wrap.style.display = text.trim() ? 'block' : 'none';
+                }
+            }
+
+            // Special middle topic divider show/hide
+            if(id === 'topic') {
+                document.getElementById('sec-mid').style.display = text.trim() ? 'flex' : 'none';
+            }
+        }
+
+        function updateGlobalStyle() {
+            const font = document.getElementById('sel-global-font').value;
+            const border = document.getElementById('sel-global-border').value;
+            
+            document.body.style.fontFamily = font;
+            
+            const borderEl = document.getElementById('page-border');
+            borderEl.className = 'page-border';
+            if(border !== 'none') borderEl.classList.add(border);
+        }
+
+        // Accurately fit A4 inside the view box 
+        function scalePreview() {
+            const wrapper = document.getElementById('preview-area');
+            const page = document.getElementById('a4-page');
+            const padding = 30; 
+            const scaleY = (wrapper.clientHeight - padding) / 1123;
+            const scaleX = (wrapper.clientWidth - padding) / 794;
+            const finalScale = Math.min(scaleX, scaleY);
+            page.style.transform = `scale(${finalScale})`;
+        }
+        
+        window.addEventListener('resize', scalePreview);
+
+        function handleLogo(e) {
+            const file = e.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = (ev) => {
+                    const img = document.getElementById('out-logo');
+                    img.src = ev.target.result;
+                    img.style.display = 'block';
+                }
+                reader.readAsDataURL(file);
+            }
+        }
+
+        function exportA4() {
+            const btn = document.querySelector('.download-btn');
+            btn.innerHTML = '<i class="fa-solid fa-circle-notch fa-spin"></i> Processing...';
+            
+            const page = document.getElementById('a4-page');
+            const currentTransform = page.style.transform;
+            page.style.transform = 'scale(1)'; // Real 1:1 scale for crystal clear download
+
+            html2canvas(page, {
+                scale: 2, 
+                useCORS: true,
+                backgroundColor: '#ffffff'
+            }).then(canvas => {
+                page.style.transform = currentTransform; // Restore preview scale
+                let link = document.createElement('a');
+                link.download = 'School_Project_FrontPage.png';
+                link.href = canvas.toDataURL("image/png");
+                link.click();
+                btn.innerHTML = '<i class="fa-solid fa-download"></i> Save as Image';
+            });
+        }
+    </script>
+</body>
+</html>
