@@ -1,0 +1,678 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tournament Matches & Rules</title>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-color: #f4f1eb;
+            --card-bg: #ffffff;
+            --text-dark: #1a1714; 
+            --text-muted: #5e564d; 
+            --accent-light: #eae3d8;
+            --accent-dark: #2b2723;
+            --border-color: #d6cfc5;
+            --primary-btn: #d19a4d;
+            --primary-btn-hover: #b8843e;
+            --success: #3f6e4a;
+            --danger: #d13b3b;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-dark);
+            font-family: 'Montserrat', sans-serif;
+            overflow-x: hidden;
+        }
+
+        /* --- Navbar --- */
+        .navbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 40px;
+            background-color: var(--card-bg);
+            box-shadow: 0 2px 10px rgba(0,0,0,0.03);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .logo {
+            font-family: 'Playfair Display', serif;
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--primary-btn);
+            letter-spacing: 1px;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 30px;
+            font-size: 11px;
+            font-weight: 600;
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+        }
+        
+        .nav-links a {
+            text-decoration: none;
+            color: var(--text-dark);
+            transition: color 0.2s ease;
+        }
+
+        .nav-links a:hover {
+            color: var(--primary-btn);
+        }
+
+        /* --- Hero Section --- */
+        .hero {
+            display: flex;
+            height: auto;
+            min-height: 250px;
+            width: 100%;
+        }
+
+        .hero-left {
+            flex: 1;
+            background-color: var(--accent-dark);
+            background-image: linear-gradient(135deg, #1a1714 0%, #3a342e 100%);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 30px;
+            text-align: center;
+        }
+        
+        .hero-left-text {
+            font-family: 'Playfair Display', serif;
+            font-size: 11px; 
+            font-weight: 400;
+            color: #ffffff;
+            letter-spacing: 4px;
+            text-transform: uppercase;
+            opacity: 0.6;
+        }
+
+        .view-rules-btn {
+            margin-top: 15px;
+            padding: 10px 24px;
+            background: transparent;
+            border: 1px solid rgba(255, 255, 255, 0.4);
+            color: #ffffff;
+            font-family: 'Montserrat', sans-serif;
+            font-size: 10px;
+            font-weight: 700;
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+            text-decoration: none;
+            border-radius: 4px;
+            transition: all 0.2s ease;
+        }
+
+        .view-rules-btn:hover {
+            background: #ffffff;
+            color: var(--accent-dark);
+            border-color: #ffffff;
+        }
+
+        .hero-right {
+            flex: 1;
+            background-color: var(--accent-light);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 30px;
+            text-align: center;
+        }
+
+        /* Auth Form */
+        .auth-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            width: 100%;
+            max-width: 320px;
+        }
+
+        input {
+            width: 100%;
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 4px;
+            padding: 12px 15px;
+            font-family: 'Montserrat', sans-serif;
+            font-size: 14px;
+            font-weight: 500;
+            text-align: center;
+            margin-bottom: 15px;
+            outline: none;
+            color: var(--text-dark);
+            box-shadow: inset 0 2px 4px rgba(0,0,0,0.02);
+        }
+
+        input:focus {
+            border-color: var(--primary-btn);
+        }
+
+        input::placeholder {
+            color: #9c9386;
+        }
+
+        .btn {
+            background: var(--text-dark);
+            border: none;
+            color: #fff;
+            padding: 14px 30px;
+            font-family: 'Montserrat', sans-serif;
+            font-size: 12px;
+            font-weight: 700;
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            width: 100%;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+        }
+
+        .btn:hover {
+            background: #000;
+            transform: translateY(-2px);
+        }
+
+        #authError {
+            color: var(--danger);
+            font-size: 12px;
+            font-weight: 600;
+            margin-top: -5px;
+            margin-bottom: 15px;
+            display: none;
+        }
+
+        #welcomeBox {
+            background: var(--card-bg);
+            padding: 20px 40px;
+            border-radius: 6px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+        }
+
+        /* --- Match Schedule Grid --- */
+        .schedule-section {
+            padding: 40px 40px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .section-title {
+            text-align: center;
+            font-family: 'Playfair Display', serif;
+            font-size: 28px;
+            font-weight: 700;
+            margin-bottom: 30px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            color: var(--text-dark);
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+        }
+
+        .card {
+            background: var(--card-bg);
+            padding: 20px 15px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            border-radius: 6px;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.06);
+            border: 1px solid var(--border-color);
+        }
+
+        .card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+            border-color: var(--primary-btn);
+        }
+
+        .date {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 14px;
+            font-weight: 700;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            color: var(--text-dark);
+            margin-bottom: 15px;
+            width: 100%;
+            border-bottom: 2px solid var(--border-color);
+            padding-bottom: 10px;
+        }
+
+        .match-entry {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            width: 100%;
+            padding: 10px 0;
+        }
+
+        .divider {
+            width: 100%;
+            height: 1px;
+            background-color: var(--border-color);
+            margin: 10px 0;
+        }
+
+        .match-num {
+            font-size: 11px;
+            font-weight: 700;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            margin-bottom: 8px;
+            color: var(--primary-btn);
+        }
+
+        .players {
+            font-size: 15px;
+            font-weight: 600;
+            line-height: 1.4;
+            margin-bottom: 10px;
+            color: var(--text-dark);
+        }
+
+        .vs {
+            font-family: 'Playfair Display', serif;
+            font-style: italic;
+            font-size: 13px;
+            color: var(--text-muted);
+            display: block;
+            margin: 2px 0;
+        }
+
+        .lock-status {
+            font-size: 11px;
+            font-weight: 700;
+            color: var(--text-muted);
+            letter-spacing: 1.5px;
+            border-top: 1px solid var(--border-color);
+            padding-top: 10px;
+            width: 100%;
+        }
+
+        .room-code-ui, .not-your-match {
+            display: none;
+            width: 100%;
+            border-top: 1px solid var(--border-color);
+            padding-top: 10px;
+        }
+
+        .not-your-match {
+            font-size: 11px;
+            font-weight: 700;
+            color: var(--danger);
+            letter-spacing: 1px;
+            text-transform: uppercase;
+        }
+
+        .code-display {
+            font-family: monospace;
+            font-size: 20px;
+            font-weight: 700;
+            letter-spacing: 4px;
+            color: var(--text-dark);
+            margin-bottom: 8px;
+            display: block;
+        }
+
+        .btn-copy {
+            background: var(--primary-btn);
+            color: #ffffff;
+            border: none;
+            border-radius: 4px;
+            padding: 8px 0;
+            font-family: 'Montserrat', sans-serif;
+            font-size: 11px;
+            font-weight: 700;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            cursor: pointer;
+            width: 100%;
+            transition: 0.2s ease;
+            box-shadow: 0 3px 8px rgba(209, 154, 77, 0.3);
+        }
+
+        .btn-copy:hover {
+            background: var(--primary-btn-hover);
+            transform: translateY(-2px);
+        }
+
+        .success-bg {
+            background-color: var(--success) !important;
+            box-shadow: 0 3px 8px rgba(63, 110, 74, 0.4) !important;
+            color: white !important;
+        }
+
+        /* --- Rules Section --- */
+        .rules-container {
+            max-width: 1200px;
+            margin: 0 auto 60px auto;
+            background: var(--card-bg);
+            border-radius: 6px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.04);
+            border: 1px solid var(--border-color);
+            padding: 40px;
+        }
+
+        .rules-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            margin-top: 20px;
+        }
+
+        .rule-group h3 {
+            font-family: 'Playfair Display', serif;
+            font-size: 16px;
+            font-weight: 700;
+            color: var(--primary-btn);
+            margin-bottom: 12px;
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 5px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .rule-group ul {
+            list-style: none;
+        }
+
+        .rule-group li {
+            position: relative;
+            padding-left: 20px;
+            margin-bottom: 10px;
+            font-size: 13px;
+            line-height: 1.6;
+            color: var(--text-dark);
+            font-weight: 500;
+        }
+
+        .rule-group li::before {
+            content: "◆";
+            position: absolute;
+            left: 0;
+            top: 0;
+            color: var(--primary-btn);
+            font-size: 10px;
+            margin-top: 2px;
+        }
+
+        .rule-group strong {
+            color: var(--text-dark);
+            font-weight: 700;
+        }
+
+        @media (max-width: 1000px) {
+            .grid { grid-template-columns: repeat(2, 1fr); }
+            .hero { flex-direction: column; height: auto; }
+            .hero-left { min-height: 120px; }
+            .nav-links { display: none; }
+            .rules-grid { grid-template-columns: 1fr; }
+        }
+
+        @media (max-width: 600px) {
+            .grid { grid-template-columns: 1fr; }
+            .navbar { padding: 15px 20px; justify-content: flex-start; } /* Forces top-left on mobile */
+            .schedule-section { padding: 30px 20px; }
+            .rules-container { padding: 25px 20px; margin: 0 20px 40px 20px; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Navbar -->
+    <nav class="navbar">
+        <div class="logo">𝚁𝚘𝚘𝚖-𝙲𝚘𝚍𝚎𝚜 & 𝚁𝚞𝚕𝚎𝚜</div>
+        <div class="nav-links">
+            <a href="#">Home</a>
+            <a href="#schedule">Schedule</a>
+            <a href="#rules">Rules</a>
+            <a href="#">Contact</a>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <div class="hero">
+        <div class="hero-left">
+            <h2 class="hero-left-text">Enter Your Username To View Your Room Codes. | Best Of Luck 🎉 |</h2>
+            <a href="#rules" class="view-rules-btn">View Rules</a>
+        </div>
+        <div class="hero-right">
+            <div class="auth-container" id="authBox">
+                <input type="password" id="usernameInput" placeholder=" Enter Your Username">
+                <div id="authError">Invalid Credential !</div>
+                <button class="btn" onclick="verifyUser()">View Match Codes</button>
+            </div>
+
+            <div id="welcomeBox" style="display: none;">
+                <h3 style="font-family: 'Playfair Display', serif; color: var(--success); font-size: 24px; font-weight: 700;">Access Granted</h3>
+                <p style="margin-top: 5px; font-size: 12px; font-weight: 600; color: var(--text-dark);">Welcome, <span id="playerName" style="color:var(--primary-btn); font-weight: 700;"></span>! Your codes are visible below.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Match Schedule Grid -->
+    <div class="schedule-section" id="schedule">
+        <h2 class="section-title">Match Schedule</h2>
+        
+        <div class="grid">
+                 
+            <!-- Box 1: 1 July 2026 -->
+            <div class="card">
+                <div class="date">3 July 2026</div>
+                
+                <div class="match-entry" data-players="Vishal_X99,Iron-Man">
+                    <div class="match-num">Match 1</div>
+                    <div class="players">Vishal_X99 <span class="vs">vs</span> Iron-Man</div>
+                    <div class="lock-status">LOCKED</div>
+                    <div class="room-code-ui">
+                        <span class="code-display">EAV62</span>
+                        <button class="btn-copy" onclick="copyCode('EAV62', this)">Copy Code</button>
+                    </div>
+                    <div class="not-your-match">NOT YOUR MATCH</div>
+                </div>
+            </div>
+
+            <!-- Box 2: 4 July 2026 -->
+            <div class="card">
+                <div class="date">4 July 2026</div>
+                
+                <div class="match-entry" data-players="TBD,Shadow">
+                    <div class="match-num">Semi Final 1</div>
+                    <div class="players">TBD <span class="vs">vs</span> Shadow</div>
+                    <div class="lock-status">LOCKED</div>
+                    <div class="room-code-ui">
+                        <span class="code-display">N/A</span>
+                        <button class="btn-copy" onclick="copyCode('N/A)', this)">Copy Code</button>
+                    </div>
+                    <div class="not-your-match">NOT YOUR MATCH</div>
+                </div>
+
+                <div class="divider"></div>
+
+                <div class="match-entry" data-players="TBD,TBD">
+                    <div class="match-num">Semi Final 2</div>
+                    <div class="players">TBD <span class="vs">vs</span> TBD</div>
+                    <div class="lock-status">LOCKED</div>
+                    <div class="room-code-ui">
+                        <span class="code-display">N/A</span>
+                        <button class="btn-copy" onclick="copyCode('N/A', this)">Copy Code</button>
+                    </div>
+                    <div class="not-your-match">NOT YOUR MATCH</div>
+                </div>
+            </div>
+
+            <!-- Box 3: 5 July 2026 -->
+            <div class="card">
+                <div class="date">5 July 2026</div>
+                
+                <div class="match-entry" data-players="TBD,TBD">
+                    <div class="match-num">Final</div>
+                    <div class="players">TBD <span class="vs">vs</span> TBD</div>
+                    <div class="lock-status">LOCKED</div>
+                    <div class="room-code-ui">
+                        <span class="code-display">N/A</span>
+                        <button class="btn-copy" onclick="copyCode('N/A', this)">Copy Code</button>
+                    </div>
+                    <div class="not-your-match">NOT YOUR MATCH</div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- Rules Section -->
+    <div class="rules-container" id="rules">
+        <h2 class="section-title" style="margin-bottom: 20px;">Event Rules & Regulation</h2>
+        
+        <div class="rules-grid">
+            <!-- Group 1 -->
+            <div class="rule-group">
+                <h3>Attendance & Combat</h3>
+                <ul>
+                    <li><strong>Attendance:</strong> Players must join the game at their scheduled match time.</li>
+                    <li><strong>Combat:</strong> Players are required to compete against their opponent using designated in-game abilities.</li>
+                </ul>
+            </div>
+
+            <!-- Group 2 -->
+            <div class="rule-group">
+                <h3>Scoring System</h3>
+                <ul>
+                    <li><strong>Win:</strong> 2 points.</li>
+                    <li><strong>Loss:</strong> 0 points.</li>
+                    <li><strong>No Join:</strong> -0.5 points (if a player fails to join).</li>
+                </ul>
+            </div>
+
+            <!-- Group 3 -->
+            <div class="rule-group">
+                <h3>Code Security & Rule</h3>
+                <ul>
+                    <li>Do not attempt to join the match before your scheduled time.</li>
+                    <li>Never share your room code with others.</li>
+                    <li>All match codes will be delivered exclusively via the app or your registered email address.</li>
+                </ul>
+            </div>
+
+            <!-- Group 4 -->
+            <div class="rule-group">
+                <h3>Opponent No Join Policy</h3>
+                <ul>
+                    <li>If your opponent fails to join the match, you must wait for exactly five minutes.</li>
+                    <li>If they have not arrived by the end of that period, you may leave the game.</li>
+                    <li><em style="color: var(--text-muted);">Example: If your start time is 8:40 AM, wait until 8:46 AM before leaving.</em></li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Maps the Secret Passwords directly to the Player Name
+        const userToPlayerMap = {
+            "ayush@121": "Ayush-09", 
+            "Ayush@121": "Ayush-09", 
+            "saumy121": "Shadow",      
+            "bot1": "Iron-Man",      
+            "op1": "Vishal_X99"       
+        };
+
+        function verifyUser() {
+            const inputVal = document.getElementById('usernameInput').value.trim();
+            const errorMsg = document.getElementById('authError');
+            
+            // Check if input exists in our mapping list
+            if (userToPlayerMap.hasOwnProperty(inputVal)) {
+                
+                const loggedInPlayer = userToPlayerMap[inputVal];
+
+                // Setup Welcome Message
+                document.getElementById('playerName').innerText = loggedInPlayer;
+
+                // UI Changes on Success
+                document.getElementById('authBox').style.display = 'none';
+                document.getElementById('welcomeBox').style.display = 'block';
+                
+                const matchEntries = document.querySelectorAll('.match-entry');
+                
+                matchEntries.forEach(entry => {
+                    const players = entry.getAttribute('data-players').split(',');
+                    const lock = entry.querySelector('.lock-status');
+                    const codeUI = entry.querySelector('.room-code-ui');
+                    const notYours = entry.querySelector('.not-your-match');
+                    
+                    // Hide the lock for all matches initially
+                    lock.style.display = 'none';
+                    
+                    // Logic to check if Logged In Player is part of this specific match
+                    if (players.includes(loggedInPlayer)) {
+                        codeUI.style.display = 'block';
+                    } else {
+                        // Matches they aren't part of
+                        notYours.style.display = 'block';
+                    }
+                });
+                
+            } else {
+                // Show Error
+                errorMsg.style.display = 'block';
+                document.getElementById('usernameInput').value = '';
+            }
+        }
+
+        // Allow pressing "Enter" to submit
+        document.getElementById("usernameInput").addEventListener("keypress", function(event) {
+            if (event.key === "Enter") {
+                event.preventDefault();
+                verifyUser();
+            }
+        });
+
+        // Function to copy text to clipboard
+        function copyCode(code, buttonElement) {
+            navigator.clipboard.writeText(code).then(() => {
+                const originalText = buttonElement.innerText;
+                
+                // Change button style to solid green to show success clearly
+                buttonElement.innerText = "COPIED!";
+                buttonElement.classList.add('success-bg');
+                
+                setTimeout(() => {
+                    buttonElement.innerText = originalText;
+                    buttonElement.classList.remove('success-bg');
+                }, 2000);
+            }).catch(err => {
+                console.error('Failed to copy: ', err);
+            });
+        }
+    </script>
+</body>
+</html>
